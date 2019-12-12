@@ -91,7 +91,7 @@
 				success : function(layero, index) {
 					var body = layer.getChildFrame('body', index);
 					var iframeWin = window[layero.find('iframe')[0]['name']];//得到iframe页的窗口对象，执行iframe页的方法：
-					var ids = iframeWin.reset(null,0);//调用子页面的方法，得到子页面返回的ids
+					var ids = iframeWin.reset(null,1);//调用子页面的方法，得到子页面返回的ids
 				}
 			});
         });
