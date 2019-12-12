@@ -1,0 +1,136 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>添加-修改</title>
+    <link rel="stylesheet" href="../frame/layui/css/layui.css">
+    <link rel="stylesheet" href="../frame/static/css/style.css">
+    <link rel="icon" href="../frame/static/image/code.png">
+</head>
+<body class="body">
+
+<form class="layui-form layui-form-pane" action="">
+    <div class="layui-form-item">
+        <label class="layui-form-label">服务名称</label>
+        <div class="layui-input-block">
+            <input type="text" name="serverName" id='serverName' autocomplete="off" placeholder="请输入" lay-verify="required"
+                   class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">类型</label>
+        <div class="layui-input-block">
+        	<input type="radio" name="type" value="1" title="限流" lay-filter="type" checked />
+			<input type="radio" name="type" value="2" title="熔断" lay-filter="type"/>
+			<input type="radio" name="type" value="3" title="系统保护" lay-filter="type"/>
+			<input type="radio" name="type" value="4" title="白名单" lay-filter="type"/>
+			<input type="radio" name="type" value="5" title="黑名单" lay-filter="type"/>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">指定IP</label>
+        <div class="layui-input-block">
+            <input type="text" name="ip" id='ip'  placeholder="请输入" autocomplete="off"
+                   class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item layui-form-text">
+    	<label class="layui-form-label">内容</label>
+        <div class="layui-input-block">
+            <textarea id="data" style='height: 300px;' name ='data' style ="height:300" placeholder="请输入内容" class="layui-textarea"></textarea>
+        </div>
+    </div>
+    <div class="layui-form-item" style="text-align:center">
+        <button class="layui-btn" lay-submit="" lay-filter="sub">提交</button>
+    </div>
+</form>
+
+<script src="../frame/layui/layui.js" charset="utf-8"></script>
+<script type="text/javascript" src="../js/jquery-3.3.1.min.js"></script>
+<script type="text/javascript">
+	var id =0;
+    layui.use(['form', 'layedit', 'laydate', 'element'], function () {
+        var form = layui.form
+                , layer = layui.layer
+                , layedit = layui.layedit
+                , laydate = layui.laydate
+                , element = layui.element;
+        //监听提交
+        form.on('submit(sub)', function(data){
+        	data.field.id = id;
+        	$.ajax({
+	            type : "post",  //提交方式  
+	            url : "/api/mng/saveSentinel",//路径  
+	            data : data.field,//数据，这里使用的是Json格式进行传输  
+	            dataType:'json',    //返回的数据格式：json/xml/html/script/jsonp/text
+	            success : function(result) {//返回数据根据结果进行相应的处理  
+	            	layer.msg(result.msg);
+	            	parent.tableIns.reload();  
+	            },
+	            error:function(request){
+	            	layer.msg('请求异常');
+	            }
+	        }); 
+            return false;
+        });
+        form.on('radio(type)', function(data){
+        	if (data.value == '1') {
+				$('#data').attr(
+						'placeholder',
+						'[{"resource":"com.guosen.examples.service.HelloService/sayHello","resourceJson":"com.guosen.examples.service.HelloServiceJSON/sayHello","count":10--限制QPS数量}]');
+				$('#serverName').attr('readonly',false);
+			} else if (data.value == '2') {
+				$('#data').attr(
+						'placeholder',
+						'[{"resource":"com.guosen.examples.service.HelloService/sayHello","resourceJson":"com.guosen.examples.service.HelloServiceJSON/sayHello","count":10--限流阈值,"timeWindow":10--熔断时间周期，单位秒}]');
+				$('#serverName').attr('readonly',false);
+			} else if (data.value == '3') {
+				$('#data').attr(
+						'placeholder',
+						'[{"highestSystemLoad":"10" --CPU*2.5,"avgRt":100--所有入口流量的平均响应时间,"maxThread":10 --入口流量的最大并发数}]');
+				$('#serverName').attr('readonly',false);
+			} else if (data.value == '4') {
+				$('#data').attr(
+						'placeholder',
+						'[{"resource":"com.guosen.examples.service.HelloService/sayHello","resourceJson":"com.guosen.examples.service.HelloServiceJSON/sayHello","limitIps":"10.33.81.61,10.33.81.62"--白名单Ip}]');
+				$('#serverName').attr('readonly',false);
+			} else if (data.value == '5') {
+				$('#data').attr(
+						'placeholder',
+						'[{"resource":"com.guosen.examples.service.HelloService/sayHello","resourceJson":"com.guosen.examples.service.HelloServiceJSON/sayHello","limitIps":"10.33.81.61,10.33.81.62"--黑名单Ip}]');
+				$('#serverName').attr('readonly',false);
+			}
+		});
+
+    });
+    function reset(obj) {
+    	if (obj != null) {
+			$('#serverName').val(obj.serverName);
+			$('#data').val(obj.data);
+			$('#ip').val(obj.ip);
+			if(obj.type ==1){
+				$("input[name='type']").get(0).checked=true; 
+		    	$('#serverName').attr('readonly',false);
+		    }else if(obj.type ==2){
+		    	$("input[name='type']").get(1).checked=true; 
+		    	$('#serverName').attr('readonly',false);
+		    }else if(obj.type ==3){
+		    	$("input[name='type']").get(2).checked=true; 
+		    	$('#serverName').attr('readonly',false);
+		    }else if(obj.type ==4){
+		    	$("input[name='type']").get(3).checked=true; 
+		    	$('#serverName').attr('readonly',false);
+		    }else if(obj.type ==5){
+		    	$("input[name='type']").get(4).checked=true; 
+		    	$('#serverName').attr('readonly',false);
+		    }
+			id=obj.id;
+			layui.form.render('radio');
+		}
+	}
+</script>
+</body>
+</html>

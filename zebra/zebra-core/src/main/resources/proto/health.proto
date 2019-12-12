@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+option java_package = "com.guosen.zebra.core.monitor.health";
+option java_outer_classname = "ServiceParam";
+
+package com.guosen.zebra.core.monitor.health;
+
+service Health {
+  rpc Check(HealthRequest) returns (HealthResponse);
+  rpc getMethods(HealthRequest) returns (HealthResponse);
+  rpc getMetrics(HealthRequest) returns (HealthResponse);
+  rpc setSentinel(SentinelRequest) returns (SentinelResponse);
+}
+
+message HealthRequest {
+  string service = 1;
+}
+
+message HealthResponse {
+  ServingStatus status = 1;
+  repeated string methodName =2;
+  string metrics =3;
+}
+
+message SentinelRequest {
+  string data = 1;
+  string type = 2;
+}
+
+message SentinelResponse {
+  int32 code =1;
+  string msg=2;
+}
+
+enum ServingStatus {
+    UNKNOWN = 0;
+    SERVING = 1;
+    NOT_SERVING = 2;
+}

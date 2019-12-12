@@ -1,0 +1,15 @@
+syntax = "proto3";
+option java_package = "com.guosen.zebra.sample.sharding.credit.service";
+option java_outer_classname = "CreditServiceProto3";
+package com.guosen.zebra.sample.sharding.credit.service;
+import "sample/hello.proto";
+
+service CreditService {
+    rpc create(com.guosen.zebra.sample.sharding.credit.dto.CreditDto) returns (com.guosen.zebra.sample.sharding.credit.dto.Result){}
+
+    rpc batchCreate(com.guosen.zebra.sample.sharding.credit.dto.CreditDtos) returns (com.guosen.zebra.sample.sharding.credit.dto.Result){}
+
+    rpc querySpecificDayCredit(com.guosen.zebra.sample.sharding.credit.dto.CreditQueryOfDay) returns (com.guosen.zebra.sample.sharding.credit.dto.QueryResult){}
+
+    rpc queryMonthCredit(com.guosen.zebra.sample.sharding.credit.dto.CreditQueryOfMonth) returns (com.guosen.zebra.sample.sharding.credit.dto.QueryResult){}
+}

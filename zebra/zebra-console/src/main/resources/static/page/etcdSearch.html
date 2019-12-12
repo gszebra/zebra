@@ -1,0 +1,95 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+<meta charset="UTF-8">
+<meta name="renderer" content="webkit">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>注册中心查询</title>
+<link rel="stylesheet" href="../frame/layui/css/layui.css">
+<link rel="stylesheet" href="../frame/static/css/style.css">
+<link rel="icon" href="../frame/static/image/code.png">
+</head>
+<body class="body">
+	<!-- 工具集 -->
+	<div class="my-btn-box">
+		<span class="fl">
+	        <a class="layui-btn btn-add btn-default" id="btn-refresh"><i class="layui-icon">&#x1002;</i></a>
+	    </span>
+	    <span class="fr">
+	        <span class="layui-form-label">搜索条件：</span>
+	        <div class="layui-input-inline">
+	            <input type="text" autocomplete="off" placeholder="请输入搜索条件"  id="searchTxt" class="layui-input">
+	        </div>
+	        <button class="layui-btn mgl-20" id='searchBtn' data-type="getInfo">查询</button>
+	    </span>
+	</div>
+	
+	<!-- 表格 -->
+	<div id="dateTable">
+		<table class="layui-hide" id="layer_table" lay-filter="useruv"></table>
+	</div>
+	
+	<script type="text/javascript" src="../frame/layui/layui.js"></script>
+	<script type="text/javascript" src="../js/index.js"></script>
+	<script type="text/javascript" src="../js/jquery-3.3.1.min.js"></script>
+	<script type="text/javascript">
+	var tableIns;
+    // layui方法
+    layui.use(['table', 'form', 'layer', 'vip_table'], function () {
+        // 操作对象
+        var form = layui.form
+                , table = layui.table
+                , layer = layui.layer
+                , vipTable = layui.vip_table
+                , $ = layui.jquery;
+
+        // 表格渲染
+        tableIns = table.render({
+            elem: '#layer_table'                  //指定原始表格元素选择器（推荐id选择器）
+            , height: vipTable.getFullHeight()    //容器高度
+            , cols: [[                  //标题栏
+                {field: 'service', title: '服务名', width: 500}
+                , {field: 'group', title: '集群', width: 100}
+                , {field: 'set', title: '分组', width: 100}
+                , {field: 'version', title: '版本号', width: 100}
+                , {field: 'ip', title: 'IP', width: 200}
+                , {field: 'port', title: '端口', width: 100}
+                , {field: 'nodeId', title: '节点号', width: 350}
+                , {field: 'key', title: '注册中心KEY', width: 500}
+                , {field: 'lease', title: '租约', width: 200}
+            ]]
+            , id: 'dataCheck'
+            , url: '/api/service/etcdList'
+            , method: 'post'
+            , page: true
+            , limits: [20, 50, 100, 200, 300]
+            , limit: 20 //默认采用25
+            , loading: false
+            , done: function (res, curr, count) {
+                //如果是异步请求数据方式，res即为你接口返回的信息。
+                //如果是直接赋值的方式，res即为：{data: [], count: 99} data为当前页数据、count为数据总长度
+            }
+        });
+
+        // 刷新
+        $('#btn-refresh').on('click', function () {
+            tableIns.reload();
+        });
+
+        $('#searchBtn').on('click',function(){
+        	 var type = $(this).data('type');
+        	 active[type] ? active[type].call(this) : '';
+        });
+        var active = {
+        	getInfo: function () {
+        		var searchTxt =$('#searchTxt').val();
+        		var wheres = {};
+        		wheres.searchTxt  =searchTxt;
+        		tableIns.reload({where:wheres});
+        	}
+        };
+    });
+    </script>
+</body>
+</html>

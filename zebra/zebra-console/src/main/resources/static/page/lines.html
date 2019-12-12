@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html style="height: 100%">
+<head>
+<meta charset="utf-8">
+</head>
+<body style="height: 100%; margin: 0">
+	<div id="container" style="height: 100%"></div>
+	<script type="text/javascript" src="../frame/echarts/echarts-all-3.js"></script>
+	<script type="text/javascript" src="../frame/echarts/ecStat.min.js"></script>
+	<script type="text/javascript" src="../frame/echarts/dataTool.min.js"></script>
+	<script type="text/javascript" src="../frame/echarts/bmap.min.js"></script>
+	<script type="text/javascript" src="../js/jquery-3.3.1.min.js"></script>
+	<script type="text/javascript" src="../frame/layui/layui.js"></script>
+	<script type="text/javascript">
+		var layer;
+		layui.use(['form'], function(){
+                layer = layui.layer;
+        });
+		var dom = document.getElementById("container");
+		var data = [];
+		var myChart = echarts.init(dom);
+		$(document).ready(refresh);
+		function get_nodes(data) {
+			var nodes = [];
+			var c = 'green';
+			for ( var nodes_i in data) {
+				if(data[nodes_i].status ==2){
+					c="#FF6600";
+				}else if(data[nodes_i].status ==3){
+					c="#CC0000";
+				}else{
+					c = 'green';
+				}
+				nodes.push({
+					'name' : data[nodes_i].name,
+					x : data[nodes_i].x,
+					y : data[nodes_i].y,
+					value : data[nodes_i].value,
+					itemStyle:{
+		                  normal:{color:c}
+		            }
+				});
+			}
+			return nodes;
+		}
+		function get_links(data) {
+			var links = [];
+			for ( var nodes_i in data) {
+				var node = data[nodes_i].name;
+				var endpoint = data[nodes_i].endpoint;
+				// console.log(service);
+				for ( var service_i in endpoint) {
+					var tnode ='';
+					for(var nodes_j in data){
+						if(data[nodes_j].value == endpoint[service_i]){
+							tnode=data[nodes_j].name;
+							break;
+						}
+					}
+					links.push({
+						'source' : node,
+						'target' : tnode,
+						'label' : {
+							'normal' : {
+								'show' : false,
+								'textStyle' : {
+									'fontSize' : 5
+								}
+							}
+						},
+						'lineStyle' : {
+							'normal' : {
+								'curveness' : 0.1
+							}
+						}
+					})
+				}
+			}
+			for (var i = 0, len1 = links.length; i < len1; i++) {
+				for (var j = i, len2 = len1 - 1; j < len2; j++) {
+					if (links[i].source == links[j].target) {
+						links[j].lineStyle.normal.curveness = -0.1;
+					}
+				}
+			}
+			// console.log(links);
+			return links;
+		}
+		window.setInterval(refresh,600000);
+		function refresh(){
+			data = [];
+			myChart = echarts.init(dom);
+			$.ajax({
+			    url:'/api/application/list',
+			    type:'get', //GET
+			    async:true,    //或false,是否异步
+			    data:{
+			    },
+			    timeout:5000,    //超时时间
+			    dataType:'json',    //返回的数据格式：json/xml/html/script/jsonp/text
+			    beforeSend:function(xhr){
+			    	
+			    },
+			    success:function(result,textStatus,jqXHR){
+			    	if(result.code ==1){
+			    		alert(result.msg);
+			    		return;
+			    	}
+			    	var json = eval(result.data); //数组     
+			    	$.each(json, function (index) {  
+			    		item ={
+			    			"x" : json[index].x,
+			    			"y" : json[index].y,
+			    			"value" : json[index].value,
+			    			"name" : json[index].name,
+			    			"addrs":json[index].addrs,
+			    			"status":json[index].status
+						};
+			    		var endpoint=[];
+			    		$.each(json[index].lines, function (index2) {  
+			    			endpoint.push(json[index].lines[index2].to);
+			    		});
+			    		item.endpoint = endpoint;
+			    		data.push(item);
+	                });  
+			    	var option = {
+			    			tooltip : {
+			    				trigger : 'item',
+			    				formatter : function(data) {
+			    					if (typeof (data.value) == "undefined") {
+			    						return data.name;
+			    					}
+			    					return data.value;
+			    				}
+
+			    			},
+			    			animationDurationUpdate : 1500,
+			    			animationEasing : 'cubicOut',
+			    			animationEasingUpdate : 'quinticInOut',
+			    			series : [ {
+			    				type : 'graph',
+			    				//layout : 'circular',
+			    				layout : 'none',
+			    				focusNodeAdjacency : true,
+			    				legendHoverLink : true,
+			    				hoverAnimation : true,
+			    				symbolSize : 50,
+			    				//edgeSymbolSize: 50,
+			    				roam : true,
+			    				symbol : "roundRect",
+			    				label : {
+			    					normal : {
+			    						show : true,
+			    					}
+			    				},
+			    				edgeSymbol : [ 'circle', 'arrow' ],
+			    				edgeSymbolSize : [ 4, 15 ],
+			    				edgeLabel : {
+			    					normal : {
+			    						textStyle : {
+			    							fontSize : 20
+			    						}
+			    					}
+			    				},
+			    				data : get_nodes(data),
+			    				links : get_links(data),
+			    				lineStyle : {
+			    					normal : {
+			    						opacity : 0.9,
+			    						width : 2,
+			    						curveness : 0,
+			    					}
+			    				}
+			    			}, ]
+			    		};
+			    	if (option && typeof option === "object") {
+						myChart.setOption(option, true);
+					}
+			    	//添加点击事件
+					myChart.on('click', function(params) {
+						//params.color = '#d50000';
+						//params.event.target.style.fill = '#d50000';
+						// 弹窗打印数据的名称
+						var addrs;
+						for ( var nodes_i in data) {
+							if(data[nodes_i].name==params.name){
+								addrs = data[nodes_i].addrs;
+							}
+						}
+						layer.alert('微服务名称: '+params.value+'<br><br> IP地址：'+addrs);
+					});
+			    },
+			    error:function(xhr,textStatus){
+			    },
+			    complete:function(){
+			    }
+			});
+		}
+	</script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.guosen</groupId>
+	<artifactId>zebra</artifactId>
+	<version>3.0.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<name>zebra</name>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<zebra.version>3.0.0-SNAPSHOT</zebra.version>
+		<springboot.version>2.0.4.RELEASE</springboot.version>
+		<jmockit.version>1.48</jmockit.version>
+		<junit.version>4.12</junit.version>
+		<hamcrest.version>2.1</hamcrest.version>
+		<commons-lang3.version>3.8</commons-lang3.version>
+		<fastjson.version>1.2.51</fastjson.version>
+		<rocketmq.version>4.3.0</rocketmq.version>
+		<slf4j-api.version>1.8.0-alpha2</slf4j-api.version>
+		<jedis.version>2.9.0</jedis.version>
+	</properties>
+
+	<modules>
+	    <module>zebra-thirdparty</module>
+		<module>zebra-core</module>
+		<module>zebra-maven-plugin</module>
+		<module>zebra-console</module>
+		<module>zebra-conf</module>
+		<module>zebra-database</module>
+    	<module>zebra-rocketmq</module>
+    	<module>zebra-monitor</module>
+    	<module>zabra-monitor-console</module>
+    	<module>zebra-frequency</module>
+ 		<module>zebra-distributed-transaction</module>
+        <module>zebra-cache</module>
+        <module>zebra-distributed-lock</module>
+	</modules>
+</project>

@@ -1,0 +1,14 @@
+syntax = "proto3";
+option java_package = "com.guosen.examples.service";
+option java_outer_classname = "HelloServiceProto2";
+package com.guosen.examples.service;
+import "example/hello.proto";
+service HelloService {
+    rpc sayHello (com.guosen.examples.model.HelloRequest) returns (com.guosen.examples.model.HelloReply) {}
+    
+    rpc sayHelloServerStream (com.guosen.examples.model.HelloRequest) returns (stream com.guosen.examples.model.HelloReply) {}
+    
+    rpc sayHelloClientStream (stream com.guosen.examples.model.HelloRequest) returns (com.guosen.examples.model.HelloReply) {}
+    
+    rpc sayHelloBidiStream (stream com.guosen.examples.model.HelloRequest) returns (stream com.guosen.examples.model.HelloReply) {}
+}

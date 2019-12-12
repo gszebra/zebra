@@ -1,0 +1,126 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>添加-修改</title>
+    <link rel="stylesheet" href="../frame/layui/css/layui.css">
+    <link rel="stylesheet" href="../frame/static/css/style.css">
+    <link rel="icon" href="../frame/static/image/code.png">
+</head>
+<body class="body">
+
+<form class="layui-form layui-form-pane" action="">
+    <div class="layui-form-item">
+        <label class="layui-form-label">服务名称</label>
+        <div class="layui-input-block">
+            <input type="text" name="server" id='server' autocomplete="off" placeholder="请输入标题" lay-verify="required"
+                   class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">作用域</label>
+        <div class="layui-input-block">
+            <select name="scope" id='scope' lay-filter="scope">
+                <option value="global" selected>GLOBAL</option>
+                <option value="idc">IDC</option>
+                <option value="set">SET</option>
+                <option value="node">NODE</option>
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">作用域名称</label>
+        <div class="layui-input-block">
+            <input type="text" name="scopeName" id='scopeName'  placeholder="请输入" autocomplete="off"
+                   class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item layui-form-text">
+    	<label class="layui-form-label">内容</label>
+        <div class="layui-input-block">
+            <textarea id="text" style='height: 300px;' name ='text' style ="height:300" placeholder="请输入内容" class="layui-textarea">zebra.grpc.registryAddress=http://xxx.xxx.xxx.xxx:2379,http://xxx.xxx.xxx.xxx:2379,http://xxx.xxx.xxx.xxx:2379
+zebra.grpc.port=50003</textarea>
+        </div>
+    </div>
+    <div class="layui-form-item" style="text-align:center">
+        <button class="layui-btn" lay-submit="" lay-filter="sub">提交</button>
+    </div>
+</form>
+
+<script src="../frame/layui/layui.js" charset="utf-8"></script>
+<script type="text/javascript" src="../js/jquery-3.3.1.min.js"></script>
+<script type="text/javascript">
+	var sid ='';
+	var cType = 0;
+    layui.use(['form', 'layedit', 'laydate', 'element'], function () {
+        var form = layui.form
+                , layer = layui.layer
+                , layedit = layui.layedit
+                , laydate = layui.laydate
+                , element = layui.element;
+        //监听提交
+        form.on('submit(sub)', function(data){
+        	data.field.sid = sid;
+        	data.field.type = cType;
+        	$.ajax({
+	            type : "post",  //提交方式  
+	            url : "/api/conf/updateConf",//路径  
+	            data : data.field,//数据，这里使用的是Json格式进行传输  
+	            dataType:'json',    //返回的数据格式：json/xml/html/script/jsonp/text
+	            success : function(result) {//返回数据根据结果进行相应的处理  
+	            	layer.msg(result.msg);
+	            	parent.tableIns.reload();  
+	            },
+	            error:function(request){
+	            	layer.msg('请求异常');
+	            }
+	        }); 
+            return false;
+        });
+        form.on('select(scope)', function(data){
+			if (data.value == 'global') {
+				$('#scopeName').val("");
+				$('#scopeName').attr("disabled", "disabled");
+			} else {
+				$('#scopeName').removeAttr("disabled");
+			}
+		});
+
+    });
+    function reset(obj,type) {
+    	cType = type;
+		if(obj !=null){
+			sid = obj.sid;
+			if (obj.scope == 'global') {
+				$('#scopeName').attr("disabled", "disabled");
+			}
+			$('#server').val(obj.server);
+			$('#scope').val(obj.scope);
+			$('#scopeName').val(obj.scopeName);
+			$('#text').val(obj.text);
+			layui.form.render('select');
+		}else{
+			$.ajax({
+	            type : "get",  //提交方式  
+	            url : "/api/conf/getRegistry",//路径  
+	            data : {
+	            },//数据，这里使用的是Json格式进行传输  
+	            dataType:'text',    //返回的数据格式：json/xml/html/script/jsonp/text
+	            success : function(result) {//返回数据根据结果进行相应的处理  
+	            	$('#text').val("zebra.grpc.registryAddress="+result+"\n"+"zebra.grpc.port=50003");
+	            }
+	        }); 
+			$('#scopeName').attr("disabled", "disabled");
+		}
+		$('#scope').on('change',function(){
+			var selectText = $(this).find('option:selected').text();
+			alert(selectText);
+			
+		});
+	}
+</script>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 重要：此文件fileName、filePattern等配置影响日志平台收集，level、logger影响性能，变更前请与架构组、运维确认。 -->
+<!-- v1.0	170105	caigy	Initial Release -->
+<!-- v1.1	170123	caigy	修复默认最多保留7个日志文件的问题；biz-log取消gzip，防止rotate期间产生的日志来不及被filebeat抽取；增加marker字段 -->
+
+<Configuration status="DEBUG" name="Log4j2Template170123"
+	monitorInterval="60">
+	<Properties>
+		<!-- 应用名称 -->
+		<Property name="APP">
+			mytest
+		</Property>
+		<!-- 日志输出路径 -->
+		<Property name="APP_LOG_HOME">/var/log/application/${APP}</Property>
+	</Properties>
+
+	<!-- 配置动态filter，当匹配到对应netAddr时，允许低于全局级别的日志输出。 -->
+<!-- 	<DynamicThresholdFilter key="netAddr" -->
+<!-- 		defaultThreshold="WARN" onMatch="ACCEPT" onMismatch="NEUTRAL"> -->
+<!-- 		<KeyValuePair key="13509610246" value="DEBUG" /> -->
+<!-- 		<KeyValuePair key="13168707501" value="DEBUG" /> -->
+<!-- 	</DynamicThresholdFilter> -->
+
+	<Appenders>
+		<Console name="console" target="SYSTEM_OUT">
+			<PatternLayout
+				pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%level] [%t] [%X{SPKG}] %c [%marker] - %msg%n" />
+		</Console>
+
+		<Console name="console-biz" target="SYSTEM_OUT">
+			<PatternLayout pattern="%msg%n" />
+		</Console>
+
+		<RollingRandomAccessFile name="file-debug"
+			fileName="${APP_LOG_HOME}/${APP}-debug.log" filePattern="${APP_LOG_HOME}/${APP}-debug-%d{yyyy-MM-dd}_%i.log.gz">
+			<PatternLayout
+				pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%level] [%t] [%X{SPKG}] %c - %msg%n" />
+			<Policies>
+				<TimeBasedTriggeringPolicy interval="1"
+					modulate="true" />
+				<SizeBasedTriggeringPolicy size="20 MB" />
+			</Policies>
+			<DefaultRolloverStrategy fileIndex="max" max="20">
+				<Delete basePath="${APP_LOG_HOME}/">
+					<IfLastModified age="P7D" />
+				</Delete>
+			</DefaultRolloverStrategy>
+		</RollingRandomAccessFile>
+
+		<RollingRandomAccessFile name="file-biz"
+			fileName="${APP_LOG_HOME}/${APP}-biz.log" filePattern="${APP_LOG_HOME}/${APP}-biz-%d{yyyy-MM-dd}_%i.log">
+			<PatternLayout pattern="%msg%n" />
+			<Policies>
+				<TimeBasedTriggeringPolicy interval="1"
+					modulate="true" />
+				<SizeBasedTriggeringPolicy size="50 MB" />
+			</Policies>
+			<DefaultRolloverStrategy fileIndex="max" max="1000">
+				<Delete basePath="${APP_LOG_HOME}/">
+					<IfLastModified age="P7D" />
+				</Delete>
+			</DefaultRolloverStrategy>
+		</RollingRandomAccessFile>
+
+		<RollingRandomAccessFile name="file-acc"
+			fileName="${APP_LOG_HOME}/${APP}-acc.log" filePattern="${APP_LOG_HOME}/${APP}-acc-%d{yyyy-MM-dd}_%i.log">
+			<PatternLayout pattern="[%d{yyyy-MM-dd HH:mm:ss.SSS}] %msg%n" />
+			<Policies>
+				<TimeBasedTriggeringPolicy interval="1"
+					modulate="true" />
+				<SizeBasedTriggeringPolicy size="50 MB" />
+			</Policies>
+			<DefaultRolloverStrategy fileIndex="max" max="1000">
+				<Delete basePath="${APP_LOG_HOME}/">
+					<IfLastModified age="P7D" />
+				</Delete>
+			</DefaultRolloverStrategy>
+		</RollingRandomAccessFile>
+
+	</Appenders>
+
+	<Loggers>
+
+		<AsyncRoot level="debug" additivity="false">
+			<!-- 生产稳定后应使用warn以上级别 -->
+			<AppenderRef ref="file-debug" level="debug" />
+			<!-- <AppenderRef ref="file-info" /> -->
+			<!-- <AppenderRef ref="file-warn" /> -->
+			<!-- 仅开发PC上测试时可打印console日志 -->
+			<AppenderRef ref="console" level="debug" />
+		</AsyncRoot>
+
+		<AsyncLogger name="biz" level="info" additivity="false">
+			<AppenderRef ref="file-biz" />
+			<!-- 仅开发PC上测试时可打印console日志 -->
+			<!-- <AppenderRef ref="console-biz" /> -->
+		</AsyncLogger>
+
+		<!-- 单独调高spring的日志输出级别，避免输出太多日志  -->
+		<AsyncLogger name="org.springframework" level="warn"
+			additivity="false">
+			<AppenderRef ref="file-debug" />
+		</AsyncLogger>
+
+		<AsyncLogger name="acc" level="info" additivity="false">
+			<AppenderRef ref="file-acc" />
+		</AsyncLogger>
+
+
+	</Loggers>
+</Configuration>

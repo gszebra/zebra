@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+<meta charset="UTF-8">
+<meta name="renderer" content="webkit">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>欢迎</title>
+<link rel="stylesheet" href="../frame/layui/css/layui.css">
+<link rel="stylesheet" href="../frame/static/css/style.css">
+<link rel="icon" href="../frame/static/image/code.png">
+</head>
+<body class="body">
+	<div class="layui-row layui-col-space10 my-index-main">
+		<div class="layui-col-xs4 layui-col-sm2 layui-col-md2">
+			<div class="my-nav-btn layui-clear" data-href="./demo/userTable.html">
+				<div class="layui-col-md5">
+					<button class="layui-btn layui-btn-big layui-btn-danger layui-icon">&#xe756;</button>
+				</div>
+				<div class="layui-col-md7 tc">
+					<p class="my-nav-text">-</p>
+					<p class="my-nav-text layui-elip">服务依赖</p>
+				</div>
+			</div>
+		</div>
+		<div class="layui-col-xs4 layui-col-sm2 layui-col-md2">
+			<div class="my-nav-btn layui-clear" data-href="./demo/fundTable.html">
+				<div class="layui-col-md5">
+					<button class="layui-btn layui-btn-big layui-btn-warm layui-icon">&#xe735;</button>
+				</div>
+				<div class="layui-col-md7 tc">
+					<p class="my-nav-text">-</p>
+					<p class="my-nav-text layui-elip">资源类配置</p>
+				</div>
+			</div>
+		</div>
+		<div class="layui-col-xs4 layui-col-sm2 layui-col-md2">
+			<div class="my-nav-btn layui-clear" data-href="./demo/zcTable.html">
+				<div class="layui-col-md5">
+					<button class="layui-btn layui-btn-big layui-icon">&#xe715;</button>
+				</div>
+				<div class="layui-col-md7 tc">
+					<p class="my-nav-text">-</p>
+					<p class="my-nav-text layui-elip">业务类配置</p>
+				</div>
+			</div>
+		</div>
+		<div class="layui-col-xs4 layui-col-sm2 layui-col-md2">
+			<div class="my-nav-btn layui-clear" data-href="./demo/taskTable.html">
+				<div class="layui-col-md5">
+					<button class="layui-btn layui-btn-big layui-btn-normal layui-icon">&#xe705;</button>
+				</div>
+				<div class="layui-col-md7 tc">
+					<p class="my-nav-text">-</p>
+					<p class="my-nav-text layui-elip">服务方法测试</p>
+				</div>
+			</div>
+		</div>
+		<!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
+		<div id="main-line" style="width: 100%;height:400px;"></div>
+
+		<div id="main-bing" style="width: 100%;height:400px;"></div>
+	</div>
+	<script type="text/javascript" src="../frame/layui/layui.js"></script>
+	<script type="text/javascript" src="../js/index.js"></script>
+	<script type="text/javascript" src="../frame/echarts/echarts.min.js"></script>
+	<script type="text/javascript" src="../js/jquery-3.3.1.min.js"></script>
+	<script type="text/javascript">
+    layui.use(['element', 'form', 'table', 'layer', 'vip_tab'], function () {
+        var form = layui.form
+                , table = layui.table
+                , layer = layui.layer
+                , vipTab = layui.vip_tab
+                , element = layui.element
+                , $ = layui.jquery;
+
+        // 打开选项卡
+        $('.my-nav-btn').on('click', function(){
+            if($(this).attr('data-href')){
+               //vipTab.add('','标题','路径');
+               vipTab.add($(this),'<i class="layui-icon">'+$(this).find("button").html()+'</i>'+$(this).find('p:last-child').html(),$(this).attr('data-href'));
+            }
+        });
+        // you code ...
+    });
+    $(document).ready(function() {
+    	$.ajax({
+    		type : "post", //提交方式  
+    		url : "/api/user/qryStatics",//路径  
+    		async : false,
+    		data : {},//数据，这里使用的是Json格式进行传输  
+    		dataType : 'json', //返回的数据格式：json/xml/html/script/jsonp/text
+    		success : function(result) {//返回数据根据结果进行相应的处理  
+    			if (result.code == 0) {
+    				// 基于准备好的dom，初始化echarts实例
+    			    var myChart = echarts.init(document.getElementById('main-line'));
+    			    // 使用刚指定的配置项和数据显示图表。
+    			    myChart.setOption({
+    			        title: {
+    			            text: '基本信息'
+    			        },
+    			        tooltip: {},
+    			        legend: {
+    			            data:['数量']
+    			        },
+    			        xAxis: {
+    			            data: ["服务","机器","配置","主动探测"]
+    			        },
+    			        yAxis: {},
+    			        series: [{
+    			            name: '数量',
+    			            type: 'bar',
+    			            data: [result.data.sCount, result.data.dCount, result.data.confCount, result.data.testCount]
+    			        }]
+    			    });
+    			    // 基于准备好的dom，初始化echarts实例
+    			    var chart = echarts.init(document.getElementById('main-bing'));
+    			    // 配置
+    			    chart.setOption({
+    			    	legend: {
+    			            data:['延迟']
+    			        },
+    			        series : [
+    			            {
+    			                name: '延迟',
+    			                type: 'pie',
+    			                radius: '55%',
+    			                data:[
+    			                    {value:result.data.i1, name:'0-100毫秒'},
+    			                    {value:result.data.i2, name:'100-500毫秒'},
+    			                    {value:result.data.i3, name:'500-1000毫秒'},
+    			                    {value:result.data.i4, name:'1-3秒'},
+    			                    {value:result.data.i5, name:'>3秒'}
+    			                ],
+    			                itemStyle:{ 
+    			                    normal:{ 
+    			                          label:{ 
+    			                            show: true, 
+    			                            formatter: '{b} : {c} ({d}%)' 
+    			                          }, 
+    			                          labelLine :{show:true} 
+    			                        } 
+    			                    } 
+    			            }
+    			        ]
+    			    });
+    			}
+    		},
+    		error : function(XMLHttpRequest, textStatus, errorThrown) {
+    			layer.msg('系统异常');
+    			window.parent.location.href = '/login.html';
+    		}
+    	});
+    });
+</script>
+</body>
+</html>

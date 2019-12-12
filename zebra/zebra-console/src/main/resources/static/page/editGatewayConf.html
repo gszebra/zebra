@@ -1,0 +1,122 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>添加-修改</title>
+    <link rel="stylesheet" href="../frame/layui/css/layui.css">
+    <link rel="stylesheet" href="../frame/static/css/style.css">
+    <link rel="icon" href="../frame/static/image/code.png">
+</head>
+<body class="body">
+
+<form class="layui-form layui-form-pane" action="">
+	<div class="layui-form-item">
+        <label class="layui-form-label">编号</label>
+        <div class="layui-input-block">
+            <input type="text" name="sid" id='sid' disabled autocomplete="off" placeholder="无需填写"
+                   class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">服务名称</label>
+        <div class="layui-input-block">
+            <input type="text" name="service" id='service' autocomplete="off" placeholder="请输入标题" lay-verify="required"
+                   class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">集群</label>
+        <div class="layui-input-block">
+            <input type="text" name="group" id='group'  placeholder="请输入" autocomplete="off"
+                   class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">版本号</label>
+        <div class="layui-input-block">
+            <input type="text" name="version" id='version'  placeholder="请输入" autocomplete="off"
+                   class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">分组</label>
+        <div class="layui-input-block">
+            <input type="text" name="set" id='set'  placeholder="请输入" autocomplete="off"
+                   class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">网关分组</label>
+        <div class="layui-input-block">
+            <input type="text" name="gatewaySet" id='gatewaySet'  placeholder="请输入" autocomplete="off"
+                   class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">URL路径</label>
+        <div class="layui-input-block">
+            <input type="text" name="path" id='path'  placeholder="请输入" autocomplete="off"
+                   class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item layui-form-text">
+    	<label class="layui-form-label">方法映射</label>
+        <div class="layui-input-block">
+            <textarea id="text" style='height: 150px;' name ='text' style ="height:300" placeholder="请输入内容" class="layui-textarea"></textarea>
+        </div>
+    </div>
+    <div class="layui-form-item layui-form-text">
+    	<label class="layui-form-label">方法tag</label>
+        <div class="layui-input-block">
+            <textarea id="tag" style='height: 100px;' name ='tag' style ="height:300" placeholder="(例如：不需要校验签名)" class="layui-textarea"></textarea>
+        </div>
+    </div>
+    <div class="layui-form-item" style="text-align:center">
+        <button class="layui-btn" lay-submit="" lay-filter="sub">提交</button>
+    </div>
+</form>
+
+<script src="../frame/layui/layui.js" charset="utf-8"></script>
+<script type="text/javascript" src="../js/jquery-3.3.1.min.js"></script>
+<script type="text/javascript">
+	var sid ='';
+    layui.use(['form', 'layedit', 'laydate', 'element'], function () {
+        var form = layui.form
+                , layer = layui.layer
+                , layedit = layui.layedit
+                , laydate = layui.laydate
+                , element = layui.element;
+        //监听提交
+        form.on('submit(sub)', function(data){
+        	$.ajax({
+                type : "post",  //提交方式  
+                url : "/api/conf/updateGatewayConf",//路径  
+                data : data.field,//数据，这里使用的是Json格式进行传输  
+                dataType:'json',    //返回的数据格式：json/xml/html/script/jsonp/text
+                success : function(result) {//返回数据根据结果进行相应的处理  
+                	layer.msg(result.msg);
+                	parent.tableIns.reload();
+                }  
+            }); 
+            return false;
+        });
+    });
+    function reset(obj) {
+		if(obj !=null){
+			$('#sid').val(obj.sid);
+		    $('#service').val(obj.service);
+		    $('#group').val(obj.group);
+		    $('#version').val(obj.version);
+		    $('#set').val(obj.set);
+		    $('#path').val(obj.path);
+		    $('#text').val(obj.text);
+		    $('#tag').val(obj.tag);
+		    $('#gatewaySet').val(obj.gatewaySet);
+		}
+	}
+</script>
+</body>
+</html>

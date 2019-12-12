@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.guosen.zebra.core.message.json";
+option java_outer_classname = "JSONProto";
+option objc_class_prefix = "HLW";
+
+package json;
+
+message JsonRequest {
+ string message = 1;
+ string reqType =2;
+}
+
+message JsonReply {
+  string message = 1;
+}

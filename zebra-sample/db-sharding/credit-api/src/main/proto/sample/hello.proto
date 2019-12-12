@@ -1,0 +1,40 @@
+syntax = "proto3";
+//option java_multiple_files = true;
+option java_package = "com.guosen.zebra.sample.sharding.credit.dto";
+option java_outer_classname = "CreditDtoProto3";
+package com.guosen.zebra.sample.sharding.credit.dto;
+
+message CreditDto {
+    string id = 1;
+    int32 fundId = 2;
+    int32 month = 3;
+    int32 day = 4;
+    string otherField1 = 5;
+    string otherField2 = 6;
+}
+
+message CreditDtos {
+    repeated CreditDto creditDtos = 1;
+}
+
+message CreditQueryOfMonth {
+    int32 fundId = 1;
+    int32 month = 2;
+}
+
+message CreditQueryOfDay {
+    int32 fundId = 1;
+    int32 day = 2;
+}
+
+
+message Result {
+    string message = 1;
+    string errorCode = 2;
+}
+
+message QueryResult {
+    string message = 1;
+    string errorCode = 2;
+    repeated CreditDto creditDtos = 3;
+}
