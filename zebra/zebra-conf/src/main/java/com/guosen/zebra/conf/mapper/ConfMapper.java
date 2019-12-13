@@ -104,7 +104,7 @@ public interface ConfMapper {
 	@Select("select count(*) from SERVER_TEST_CONF")
 	public int qryTestConfStatics();
 
-	@Select("select SID AS  sid, SERVER_NAME  AS service, SERVER_GROUP AS 'group', SERVER_VERSION AS version,SERVER_SET AS 'set' ,SERVER_PATH path ,SERVER_TEXT text,TAG tag,ISNULL(GATEWAY_SET,'') gatewaySet,DATE_FORMAT(UPDDATE,'%Y-%m-%d %H:%i:%s') date, VERSION_INFO versionInfo from GATEWAY_CONF_HIS WHERE SID=#{sid}")
+	@Select("select SID AS  sid, SERVER_NAME  AS service, SERVER_GROUP AS 'group', SERVER_VERSION AS version,SERVER_SET AS 'set' ,SERVER_PATH path ,SERVER_TEXT text,TAG tag,IFNULL(GATEWAY_SET,'') gatewaySet,DATE_FORMAT(UPDDATE,'%Y-%m-%d %H:%i:%s') date, VERSION_INFO versionInfo from GATEWAY_CONF_HIS WHERE SID=#{sid}")
 	public List<GatwayConf> getGatewayHistConf(ConfCenter param);
 
 	@Update("update a set a.UPDDATE=CURRENT_TIMESTAMP(),a.SERVER_NAME=b.SERVER_NAME,a.SERVER_GROUP=b.SERVER_GROUP ,a.SERVER_VERSION=b.SERVER_VERSION ,a.SERVER_SET=b.SERVER_SET,a.SERVER_PATH=b.SERVER_PATH,a.SERVER_TEXT=b.SERVER_TEXT,a.TAG=b.TAG,a.GATEWAY_SET=b.GATEWAY_SET  from GATEWAY_CONF a,GATEWAY_CONF_HIS b where b.SID=#{sid} and a.SID=b.SID and b.VERSION_INFO=#{versionInfo}")
