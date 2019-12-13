@@ -13,6 +13,7 @@
         <module>db-master-slave</module>
         <module>db-sharding</module>
         <module>rocketmq</module>
+        <module>quick-start</module>
     </modules>
 
     <properties>
