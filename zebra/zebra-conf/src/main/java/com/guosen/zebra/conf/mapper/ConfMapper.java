@@ -27,7 +27,7 @@ public interface ConfMapper {
 	@Select("SELECT * FROM SERVER_VERSION_CONF")
 	public List<Map<String, String>> getServerVersionConf(Map<String, String> param);
 
-	@Update("update SERVER_VERSION_CONF SET SERVER_NAME=#{SERVER_NAME},SERVER_VERSION=#{SERVER_VERSION},SERVER_VERSION_DESC=#{SERVER_VERSION_DESC},UPDDATE=getdate() where SID=#{SID}")
+	@Update("update SERVER_VERSION_CONF SET SERVER_NAME=#{SERVER_NAME},SERVER_VERSION=#{SERVER_VERSION},SERVER_VERSION_DESC=#{SERVER_VERSION_DESC},UPDDATE=CURRENT_TIMESTAMP() where SID=#{SID}")
 	public int updServerVersion(Map<String, Object> param);
 
 	@Insert("INSERT INTO [dbo].[SERVER_VERSION_CONF]([SERVER_NAME],[SERVER_VERSION],[SERVER_VERSION_DESC])VALUES(#{SERVER_NAME},#{SERVER_VERSION},#{SERVER_VERSION_DESC})")
@@ -36,7 +36,7 @@ public interface ConfMapper {
 	@Select("select * from SERVER_TEST_CONF where SERVER_NAME=#{server} and METHOD_NAME=#{method}")
 	public Map<String, Object> getServerTest(ServerTest param);
 
-	@Update("update SERVER_TEST_CONF set REQUEST =#{request},RESPONSE=#{response},ATTACHMENTS =#{attachments},DESCRIPT=#{descript},UPDDATE=getdate() where SERVER_NAME=#{server} and METHOD_NAME=#{method}")
+	@Update("update SERVER_TEST_CONF set REQUEST =#{request},RESPONSE=#{response},ATTACHMENTS =#{attachments},DESCRIPT=#{descript},UPDDATE=CURRENT_TIMESTAMP() where SERVER_NAME=#{server} and METHOD_NAME=#{method}")
 	public int updServerTest(ServerTest param);
 
 	@Insert("INSERT INTO SERVER_TEST_CONF(SERVER_NAME,METHOD_NAME,REQUEST,RESPONSE,ATTACHMENTS,DESCRIPT) values(#{server},#{method},#{request},#{response},#{attachments},#{descript})")
@@ -45,7 +45,7 @@ public interface ConfMapper {
 	@Insert("INSERT INTO dbo.GATEWAY_CONF( SERVER_NAME ,SERVER_GROUP ,SERVER_VERSION ,SERVER_SET ,SERVER_PATH,SERVER_TEXT,TAG,GATEWAY_SET)VALUES  ( #{service},#{group},#{version},#{set} ,#{path},#{text},#{tag},#{gatewaySet})")
 	public int insertGatewayConf(GatwayConf param);
 
-	@Update("update GATEWAY_CONF set SERVER_NAME =#{service},SERVER_GROUP=#{group},UPDDATE=getdate(),SERVER_VERSION=#{version},SERVER_SET=#{set}, SERVER_PATH =#{path},SERVER_TEXT=#{text} ,TAG=#{tag},GATEWAY_SET=#{gatewaySet} where SID=#{sid}")
+	@Update("update GATEWAY_CONF set SERVER_NAME =#{service},SERVER_GROUP=#{group},UPDDATE=CURRENT_TIMESTAMP(),SERVER_VERSION=#{version},SERVER_SET=#{set}, SERVER_PATH =#{path},SERVER_TEXT=#{text} ,TAG=#{tag},GATEWAY_SET=#{gatewaySet} where SID=#{sid}")
 	public int updGatewayConf(GatwayConf param);
 
 	@Update("delete from GATEWAY_CONF where SID=#{sid}")
@@ -70,7 +70,7 @@ public interface ConfMapper {
 	@Options(useGeneratedKeys = true, keyProperty = "sid", keyColumn = "SID")
 	public int insertConf(ConfCenter param);
 
-	@Update("update CONF_CENTER set SERVER_NAME =#{server},SERVER_SCOPE=#{scope},UPDDATE=getdate(),SERVER_SCOPE_NAME=#{scopeName},CONF_TEXT=#{text} where SID=#{sid}")
+	@Update("update CONF_CENTER set SERVER_NAME =#{server},SERVER_SCOPE=#{scope},UPDDATE=CURRENT_TIMESTAMP(),SERVER_SCOPE_NAME=#{scopeName},CONF_TEXT=#{text} where SID=#{sid}")
 	public int updConf(ConfCenter param);
 
 	@Delete("delete from CONF_CENTER where SID=#{sid}")
@@ -82,10 +82,10 @@ public interface ConfMapper {
 	@Select("select SID sid,TYPE type, SERVER_NAME server, SERVER_SCOPE scope, SERVER_SCOPE_NAME scopeName,CONF_TEXT text,CONVERT(varchar(100), UPDDATE, 120) date,VERSION_INFO versionInfo from CONF_CENTER_HISTORY  WHERE SID=#{sid}")
 	public List<ConfHisCenter> getHistoryConf(ConfCenter param);
 
-	@Update("update a set a.UPDDATE=getdate(),a.SERVER_NAME=b.SERVER_NAME,a.SERVER_SCOPE=b.SERVER_SCOPE,a.SERVER_SCOPE_NAME=b.SERVER_SCOPE_NAME,a.CONF_TEXT=b.CONF_TEXT from CONF_CENTER a,CONF_CENTER_HISTORY b where b.SID=#{sid} and a.SID=b.SID and b.VERSION_INFO=#{versionInfo}")
+	@Update("update a set a.UPDDATE=CURRENT_TIMESTAMP(),a.SERVER_NAME=b.SERVER_NAME,a.SERVER_SCOPE=b.SERVER_SCOPE,a.SERVER_SCOPE_NAME=b.SERVER_SCOPE_NAME,a.CONF_TEXT=b.CONF_TEXT from CONF_CENTER a,CONF_CENTER_HISTORY b where b.SID=#{sid} and a.SID=b.SID and b.VERSION_INFO=#{versionInfo}")
 	public int centerRecovery(ConfCenter param);
 
-	@Update("update SERVER_MANAGER_CONF set UPDDATE=getdate(),M_TYPE=#{type},SERVER_NAME=#{serverName},SERVER_IP=#{ip},DATA=#{data} where SID=#{id}")
+	@Update("update SERVER_MANAGER_CONF set UPDDATE=CURRENT_TIMESTAMP(),M_TYPE=#{type},SERVER_NAME=#{serverName},SERVER_IP=#{ip},DATA=#{data} where SID=#{id}")
 	public int updSentinel(SentinelDTO param);
 	
 	@Delete("delete from SERVER_MANAGER_CONF where SID=#{id}")
@@ -107,6 +107,6 @@ public interface ConfMapper {
 	@Select("select SID AS  sid, SERVER_NAME  AS service, SERVER_GROUP AS 'group', SERVER_VERSION AS version,SERVER_SET AS 'set' ,SERVER_PATH path ,SERVER_TEXT text,TAG tag,ISNULL(GATEWAY_SET,'') gatewaySet,CONVERT(varchar(100), UPDDATE, 120) date, VERSION_INFO versionInfo from GATEWAY_CONF_HIS WHERE SID=#{sid}")
 	public List<GatwayConf> getGatewayHistConf(ConfCenter param);
 
-	@Update("update a set a.UPDDATE=getdate(),a.SERVER_NAME=b.SERVER_NAME,a.SERVER_GROUP=b.SERVER_GROUP ,a.SERVER_VERSION=b.SERVER_VERSION ,a.SERVER_SET=b.SERVER_SET,a.SERVER_PATH=b.SERVER_PATH,a.SERVER_TEXT=b.SERVER_TEXT,a.TAG=b.TAG,a.GATEWAY_SET=b.GATEWAY_SET  from GATEWAY_CONF a,GATEWAY_CONF_HIS b where b.SID=#{sid} and a.SID=b.SID and b.VERSION_INFO=#{versionInfo}")
+	@Update("update a set a.UPDDATE=CURRENT_TIMESTAMP(),a.SERVER_NAME=b.SERVER_NAME,a.SERVER_GROUP=b.SERVER_GROUP ,a.SERVER_VERSION=b.SERVER_VERSION ,a.SERVER_SET=b.SERVER_SET,a.SERVER_PATH=b.SERVER_PATH,a.SERVER_TEXT=b.SERVER_TEXT,a.TAG=b.TAG,a.GATEWAY_SET=b.GATEWAY_SET  from GATEWAY_CONF a,GATEWAY_CONF_HIS b where b.SID=#{sid} and a.SID=b.SID and b.VERSION_INFO=#{versionInfo}")
 	public int gatewayConfRecovery(ConfCenter param);
 }
