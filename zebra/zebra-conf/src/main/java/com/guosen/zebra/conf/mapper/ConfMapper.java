@@ -66,7 +66,7 @@ public interface ConfMapper {
 	@Select("select SID sid,TYPE type, SERVER_NAME server, SERVER_SCOPE scope, SERVER_SCOPE_NAME scopeName,CONF_TEXT text from CONF_CENTER WHERE SID=#{sid}")
 	public ConfCenter getConfById(ConfCenter param);
 
-	@Insert("INSERT INTO dbo.CONF_CENTER(TYPE,SERVER_NAME,SERVER_SCOPE,SERVER_SCOPE_NAME,CONF_TEXT)VALUES(#{type},#{server},#{scope},#{scopeName},#{text})")
+	@Insert("INSERT INTO CONF_CENTER(TYPE,SERVER_NAME,SERVER_SCOPE,SERVER_SCOPE_NAME,CONF_TEXT)VALUES(#{type},#{server},#{scope},#{scopeName},#{text})")
 	@Options(useGeneratedKeys = true, keyProperty = "sid", keyColumn = "SID")
 	public int insertConf(ConfCenter param);
 
@@ -76,7 +76,7 @@ public interface ConfMapper {
 	@Delete("delete from CONF_CENTER where SID=#{sid}")
 	public int delConf(ConfCenter param);
 
-	@Insert("INSERT INTO dbo.CONF_CENTER_HISTORY(SID,TYPE,SERVER_NAME,SERVER_SCOPE,SERVER_SCOPE_NAME,CONF_TEXT,INSERTDATE,UPDDATE,VERSION_INFO) select *,#{versionInfo} from CONF_CENTER where SID=#{sid}")
+	@Insert("INSERT INTO CONF_CENTER_HISTORY(SID,TYPE,SERVER_NAME,SERVER_SCOPE,SERVER_SCOPE_NAME,CONF_TEXT,INSERTDATE,UPDDATE,VERSION_INFO) select *,#{versionInfo} from CONF_CENTER where SID=#{sid}")
 	public int insertConfHistory(ConfCenter param);
 
 	@Select("select SID sid,TYPE type, SERVER_NAME server, SERVER_SCOPE scope, SERVER_SCOPE_NAME scopeName,CONF_TEXT text,DATE_FORMAT(UPDDATE,'%Y-%m-%d %H:%i:%s') date,VERSION_INFO versionInfo from CONF_CENTER_HISTORY  WHERE SID=#{sid}")
@@ -91,7 +91,7 @@ public interface ConfMapper {
 	@Delete("delete from SERVER_MANAGER_CONF where SID=#{id}")
 	public int delSentinel(SentinelDTO param);
 
-	@Insert("INSERT INTO dbo.SERVER_MANAGER_CONF( SERVER_NAME ,M_TYPE,SERVER_IP,DATA) VALUES (#{serverName},#{type},#{ip},#{data})")
+	@Insert("INSERT INTO SERVER_MANAGER_CONF( SERVER_NAME ,M_TYPE,SERVER_IP,DATA) VALUES (#{serverName},#{type},#{ip},#{data})")
 	@Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "SID")
 	public int createSentinel(SentinelDTO param);
 
