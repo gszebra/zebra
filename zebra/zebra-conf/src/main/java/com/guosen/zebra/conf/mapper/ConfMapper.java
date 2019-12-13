@@ -36,7 +36,7 @@ public interface ConfMapper {
 	@Select("select * from SERVER_TEST_CONF where SERVER_NAME=#{server} and METHOD_NAME=#{method}")
 	public Map<String, Object> getServerTest(ServerTest param);
 
-	@Update("update SERVER_TEST_CONF set REQUEST =#{request},RESPONSE=#{response},ATTACHMENTS =#{attachments},DESCRIPT=#{descript},UPDDATE=getdate() where SERVER_NAME=#{server} and METHOD_NAME=#{method}")
+	@Update("update SERVER_TEST_CONF set REQUEST =#{request},RESPONSE=#{response},ATTACHMENTS =#{attachments},DESCRIPT=#{descript},UPDDATE=CURRENT_TIMESTAMP() where SERVER_NAME=#{server} and METHOD_NAME=#{method}")
 	public int updServerTest(ServerTest param);
 
 	@Insert("INSERT INTO SERVER_TEST_CONF(SERVER_NAME,METHOD_NAME,REQUEST,RESPONSE,ATTACHMENTS,DESCRIPT) values(#{server},#{method},#{request},#{response},#{attachments},#{descript})")
