@@ -122,16 +122,4 @@
 			</plugins>
 		</pluginManagement>
 	</build>
-	<distributionManagement>
-		<repository>
-			<id>releases</id>
-			<name>nexus</name>
-			<url>http://172.24.180.27:8081/nexus/content/repositories/releases</url>
-		</repository>
-		<snapshotRepository>
-			<id>snapshots</id>
-			<name>nexus</name>
-			<url>http://172.24.180.27:8081/nexus/content/repositories/snapshots</url>
-		</snapshotRepository>
-	</distributionManagement>
 </project>
