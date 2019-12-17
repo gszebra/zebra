@@ -12,7 +12,7 @@
 		<dependency>
             <groupId>com.guosen</groupId>
             <artifactId>zebra-core</artifactId>
-            <version>1.0.0-SNAPSHOT</version> 
+            <version>3.0.0-SNAPSHOT</version> 
         </dependency>
 	</dependencies>
 	<build>
@@ -100,7 +100,7 @@
 											zebra-maven-plugin
 										</artifactId>
 										<versionRange>
-											[1.0.0-SNAPSHOT,)
+											[3.0.0-SNAPSHOT,)
 										</versionRange>
 										<goals>
 											<goal>proto2java</goal>

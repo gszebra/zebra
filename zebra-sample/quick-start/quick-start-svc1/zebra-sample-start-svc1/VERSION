@@ -1,0 +1,2 @@
+version=@project.version@
+commit_id=@commitid@

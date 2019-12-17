@@ -30,7 +30,7 @@ public interface ConfMapper {
 	@Update("update SERVER_VERSION_CONF SET SERVER_NAME=#{SERVER_NAME},SERVER_VERSION=#{SERVER_VERSION},SERVER_VERSION_DESC=#{SERVER_VERSION_DESC},UPDDATE=CURRENT_TIMESTAMP() where SID=#{SID}")
 	public int updServerVersion(Map<String, Object> param);
 
-	@Insert("INSERT INTO [dbo].[SERVER_VERSION_CONF]([SERVER_NAME],[SERVER_VERSION],[SERVER_VERSION_DESC])VALUES(#{SERVER_NAME},#{SERVER_VERSION},#{SERVER_VERSION_DESC})")
+	@Insert("INSERT INTO SERVER_VERSION_CONF (SERVER_NAME,SERVER_VERSION,SERVER_VERSION_DESC)VALUES(#{SERVER_NAME},#{SERVER_VERSION},#{SERVER_VERSION_DESC})")
 	public int instServerVersion(Map<String, Object> param);
 
 	@Select("select * from SERVER_TEST_CONF where SERVER_NAME=#{server} and METHOD_NAME=#{method}")
@@ -42,7 +42,7 @@ public interface ConfMapper {
 	@Insert("INSERT INTO SERVER_TEST_CONF(SERVER_NAME,METHOD_NAME,REQUEST,RESPONSE,ATTACHMENTS,DESCRIPT) values(#{server},#{method},#{request},#{response},#{attachments},#{descript})")
 	public int insertServerTest(ServerTest param);
 
-	@Insert("INSERT INTO dbo.GATEWAY_CONF( SERVER_NAME ,SERVER_GROUP ,SERVER_VERSION ,SERVER_SET ,SERVER_PATH,SERVER_TEXT,TAG,GATEWAY_SET)VALUES  ( #{service},#{group},#{version},#{set} ,#{path},#{text},#{tag},#{gatewaySet})")
+	@Insert("INSERT INTO GATEWAY_CONF (SERVER_NAME ,SERVER_GROUP ,SERVER_VERSION ,SERVER_SET ,SERVER_PATH,SERVER_TEXT,TAG,GATEWAY_SET) VALUES (#{service},#{group},#{version},#{set} ,#{path},#{text},#{tag},#{gatewaySet})")
 	public int insertGatewayConf(GatwayConf param);
 
 	@Update("update GATEWAY_CONF set SERVER_NAME =#{service},SERVER_GROUP=#{group},UPDDATE=CURRENT_TIMESTAMP(),SERVER_VERSION=#{version},SERVER_SET=#{set}, SERVER_PATH =#{path},SERVER_TEXT=#{text} ,TAG=#{tag},GATEWAY_SET=#{gatewaySet} where SID=#{sid}")
@@ -54,7 +54,7 @@ public interface ConfMapper {
 	@Insert("insert into GATEWAY_CONF_HIS(SID,SERVER_NAME,SERVER_GROUP,SERVER_VERSION,SERVER_SET,SERVER_PATH,SERVER_TEXT,TAG,INSERTDATE,UPDDATE,GATEWAY_SET,VERSION_INFO) select *,#{versionInfo} from GATEWAY_CONF where SID=#{sid}")
 	public int bakGatewayConf(GatwayConf param);
 
-	@Select("select SID AS  sid, SERVER_NAME  AS service, SERVER_GROUP AS 'group', SERVER_VERSION AS version,SERVER_SET AS 'set' ,SERVER_PATH path ,SERVER_TEXT text,TAG tag,ISNULL(GATEWAY_SET,'') gatewaySet from GATEWAY_CONF")
+	@Select("select SID AS  sid, SERVER_NAME  AS service, SERVER_GROUP AS 'group', SERVER_VERSION AS version,SERVER_SET AS 'set' ,SERVER_PATH path ,SERVER_TEXT text,TAG tag,IFNULL(GATEWAY_SET,'') gatewaySet from GATEWAY_CONF")
 	public List<GatwayConf> getGatewayConf();
 
 	@Select("select SID sid,TYPE type, SERVER_NAME server, SERVER_SCOPE scope, SERVER_SCOPE_NAME scopeName,CONF_TEXT text from CONF_CENTER WHERE TYPE=#{type} and SERVER_NAME=#{server} order by SERVER_NAME")
