@@ -1,0 +1,13 @@
+syntax = "proto3";
+option java_package = "com.guosen.zebra.sample.start.svc1.model";
+option java_outer_classname = "Hello";
+package com.guosen.zebra.sample.start.svc1.model;
+
+message HelloRequest {
+    string name = 1;
+}
+
+// The response message containing the greetings
+message HelloReply {
+    string message = 1;
+}

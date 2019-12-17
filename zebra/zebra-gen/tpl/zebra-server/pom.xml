@@ -7,28 +7,11 @@
     <artifactId>example-server</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
-    <!-- Inherit defaults from Spring Boot -->
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.5.8.RELEASE</version>
-    </parent>
-
     <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-            <exclusions>
-	            <exclusion>
-		            <groupId>org.springframework.boot</groupId>
-		            <artifactId>spring-boot-starter-logging</artifactId>
-	            </exclusion>
-   			</exclusions>
-        </dependency>
          <dependency>
             <groupId>com.guosen</groupId>
             <artifactId>zebra-core</artifactId>
-            <version>1.0.0-SNAPSHOT</version> 
+            <version>3.0.0-SNAPSHOT</version> 
         </dependency>
     </dependencies>
 

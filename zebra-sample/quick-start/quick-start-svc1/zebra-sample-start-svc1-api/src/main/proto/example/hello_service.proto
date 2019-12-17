@@ -1,0 +1,8 @@
+syntax = "proto3";
+option java_package = "com.guosen.zebra.sample.start.svc1.service";
+option java_outer_classname = "HelloServiceProto3";
+package com.guosen.zebra.sample.start.svc1.service;
+import "example/hello.proto";
+service HelloService {
+    rpc sayHello (com.guosen.zebra.sample.start.svc1.model.HelloRequest) returns (com.guosen.zebra.sample.start.svc1.model.HelloReply) {}
+}
