@@ -77,7 +77,7 @@ public class ConsoleSerivce implements ApplicationListener<WebServerInitializedE
 
 	private final OkHttpClient client = new OkHttpClient();
 
-	@Value("${zebra.monitor.port:8084}")
+	@Value("${zebra.monitor.port:8083}")
 	private int monitorPort;
 
 	private ExecutorService executor = (ExecutorService) SharedResourceHolder.get(GrpcUtil.SHARED_CHANNEL_EXECUTOR);
@@ -143,7 +143,9 @@ public class ConsoleSerivce implements ApplicationListener<WebServerInitializedE
 				}
 			}
 			max += 100;
-			serviceMap.get(ZebraConstants.TYPE_GATEWATY).setX(max / 2 - 50);
+			if(serviceMap.get(ZebraConstants.TYPE_GATEWATY)!=null) {
+				serviceMap.get(ZebraConstants.TYPE_GATEWATY).setX(max / 2 - 50);
+			}
 			for (String k : serviceStatusCache.keySet()) {
 				String key = k;
 				if (k.split("\\.").length > 0) {
@@ -280,6 +282,7 @@ public class ConsoleSerivce implements ApplicationListener<WebServerInitializedE
 							Integer.parseInt(targetAddr.split(":")[1]));
 					HealthBlockingStub futureStub = HealthGrpc.newBlockingStub(channel);
 					HealthResponse resp = futureStub.getMethods(request);
+					JSONObject json = PBResolver.getPbResolver(resp.getMetrics());
 					for (int i = 0; i < resp.getMethodNameCount(); i++) {
 						Map<String, String> map = Maps.newHashMap();
 						map.put("server", fullServiceName);
@@ -292,7 +295,7 @@ public class ConsoleSerivce implements ApplicationListener<WebServerInitializedE
 						if (result.getJSONObject(ZebraConstants.KEY_DATA) != null) {
 							desc = result.getJSONObject(ZebraConstants.KEY_DATA).getString("DESCRIPT");
 						}
-						JSONObject json = PBResolver.getPbResolver(resp.getMetrics());
+						
 						JSONArray mds = json.getJSONArray("mds");
 						JSONArray msgs = json.getJSONArray("msgs");
 
@@ -427,7 +430,8 @@ public class ConsoleSerivce implements ApplicationListener<WebServerInitializedE
 			String ip = retList.stream().map(p -> {
 				return p.getValue().toStringUtf8();
 			}).collect(Collectors.toList()).get(0).split(":")[0];
-			Request request = new Request.Builder().url("http://" + ip + ":" + monitorPort + "/health").build();
+			String url = "http://" + ip + ":" + monitorPort + "/health";
+			Request request = new Request.Builder().url(url).build();
 			Response response = client.newCall(request).execute();
 			String ret = response.body().string();
 			try {
@@ -439,7 +443,7 @@ public class ConsoleSerivce implements ApplicationListener<WebServerInitializedE
 					CalServiceStatus cal = new CalServiceStatus(list);
 					executor.execute(cal);
 				} else {
-					log.warn("monitor center response error {}", response.code());
+					log.warn("monitor center response error {},url:{}", response.code(),url);
 				}
 			} catch (Exception e) {
 				log.error(e.getMessage() + ",ret={}", ret);
@@ -608,17 +612,19 @@ public class ConsoleSerivce implements ApplicationListener<WebServerInitializedE
 		String apis = response.body().string();
 		JSONObject ret = JSON.parseObject(apis);
 		JSONArray array = ret.getJSONArray(ZebraConstants.KEY_DATA);
-		for (Object obj : array) {// 需要将网关访问的东西放在最前面，这样生产出来的东西会有层次感
-			String fullServiceName = ((JSONObject) obj).getString("service");
-			String serviceName = fullServiceName;
-			if (fullServiceName.split("\\.").length > 0) {
-				serviceName = fullServiceName.split("\\.")[fullServiceName.split("\\.").length - 1];
-			}
-			if (serviceMap.get(serviceName) != null) {
-				Line line = new Line();
-				line.setFrom(ZebraConstants.TYPE_GATEWATY);
-				line.setTo(fullServiceName);
-				serviceMap.get(ZebraConstants.TYPE_GATEWATY).getLines().add(line);
+		if(null!=array) {
+			for (Object obj : array) {// 需要将网关访问的东西放在最前面，这样生产出来的东西会有层次感
+				String fullServiceName = ((JSONObject) obj).getString("service");
+				String serviceName = fullServiceName;
+				if (fullServiceName.split("\\.").length > 0) {
+					serviceName = fullServiceName.split("\\.")[fullServiceName.split("\\.").length - 1];
+				}
+				if (serviceMap.get(serviceName) != null) {
+					Line line = new Line();
+					line.setFrom(ZebraConstants.TYPE_GATEWATY);
+					line.setTo(fullServiceName);
+					serviceMap.get(ZebraConstants.TYPE_GATEWATY).getLines().add(line);
+				}
 			}
 		}
 	}
