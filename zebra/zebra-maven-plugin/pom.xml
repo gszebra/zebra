@@ -14,7 +14,7 @@
 		<os.maven.version>3.5.2</os.maven.version>
 		<plugin-tools.version>3.5</plugin-tools.version>
 		<google-collections.version>1.0</google-collections.version>
-		<guava.version>26.0-jre</guava.version>
+		<guava.version>29.0-jre</guava.version>
 		<commons-lang.version>3.8</commons-lang.version>
 		<pb-java.version>3.6.1</pb-java.version>
 		<protoc-jar.version>3.6.0</protoc-jar.version>
