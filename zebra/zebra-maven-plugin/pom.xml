@@ -18,7 +18,7 @@
 		<commons-lang.version>3.8</commons-lang.version>
 		<pb-java.version>3.6.1</pb-java.version>
 		<protoc-jar.version>3.6.0</protoc-jar.version>
-		<commons-io.version>2.6</commons-io.version>
+		<commons-io.version>2.7</commons-io.version>
 	</properties>
 	<dependencies>
 		<dependency>
