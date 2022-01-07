@@ -24,7 +24,7 @@
 		<jackson.version>2.9.3</jackson.version>
 		<jetcd.version>0.0.2</jetcd.version>
 		<guava.version>26.0-jre</guava.version>
-		<proto-java.version>3.7.1</proto-java.version>
+		<proto-java.version>3.16.1</proto-java.version>
 		<zipkin-reporter2.version>2.6.0</zipkin-reporter2.version>
 		<brave-core.version>4.13.4</brave-core.version>
 		<brave-spancollector-http.version>4.13.4</brave-spancollector-http.version>
