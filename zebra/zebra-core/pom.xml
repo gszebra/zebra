@@ -21,7 +21,7 @@
 		<netty-tcnative-boringssl-static.version>2.0.7.Final</netty-tcnative-boringssl-static.version>
 		<disruptor.version>3.3.7</disruptor.version>
 		<aspectj.version>1.8.13</aspectj.version>
-		<jackson.version>2.9.3</jackson.version>
+		<jackson.version>2.13.4.1</jackson.version>
 		<jetcd.version>0.0.2</jetcd.version>
 		<guava.version>26.0-jre</guava.version>
 		<proto-java.version>3.7.1</proto-java.version>
